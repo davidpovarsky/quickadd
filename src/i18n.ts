@@ -1,5 +1,3 @@
-import { moment } from "obsidian";
-
 type Language = "en" | "he";
 type TemplateValue = string | number | boolean | null | undefined;
 
@@ -113,6 +111,8 @@ const en = {
 	"choiceTypes.default.folder": "New folder",
 } as const;
 
+type TranslationKey = keyof typeof en;
+
 const he: Record<TranslationKey, string> = {
 	"commands.run": "הפעל",
 	"commands.runTemplateFromFolder": "פתק חדש מתבנית",
@@ -223,16 +223,39 @@ const he: Record<TranslationKey, string> = {
 	"choiceTypes.default.folder": "תיקייה חדשה",
 };
 
-type TranslationKey = keyof typeof en;
+const translations: Record<Language, Record<TranslationKey, string>> = { en, he };
 
-const translations: Record<Language, Record<TranslationKey, string>> = {
-	en,
-	he,
-};
+function getLocaleCandidates(): string[] {
+	const candidates: string[] = [];
+	const read = (getter: () => unknown): void => {
+		try {
+			const value = getter();
+			if (typeof value === "string" && value.length > 0) candidates.push(value);
+			if (Array.isArray(value)) {
+				for (const item of value) {
+					if (typeof item === "string" && item.length > 0) candidates.push(item);
+				}
+			}
+		} catch {
+			// Locale detection must never break plugin startup or settings rendering.
+		}
+	};
+
+	read(() => (globalThis as { moment?: { locale?: () => string } }).moment?.locale?.());
+	read(() => document?.documentElement?.lang);
+	read(() => navigator?.language);
+	read(() => navigator?.languages);
+
+	return candidates;
+}
 
 export function getQuickAddLanguage(): Language {
-	const locale = moment.locale().toLowerCase().replace("_", "-");
-	return locale === "he" || locale.startsWith("he-") ? "he" : "en";
+	return getLocaleCandidates().some((locale) => {
+		const normalized = locale.toLowerCase().replace("_", "-");
+		return normalized === "he" || normalized.startsWith("he-") || normalized === "iw" || normalized.startsWith("iw-");
+	})
+		? "he"
+		: "en";
 }
 
 export function isQuickAddRtl(): boolean {
@@ -243,10 +266,7 @@ export function quickAddTextDirection(): "ltr" | "rtl" {
 	return isQuickAddRtl() ? "rtl" : "ltr";
 }
 
-export function t(
-	key: TranslationKey,
-	values: Record<string, TemplateValue> = {},
-): string {
+export function t(key: TranslationKey, values: Record<string, TemplateValue> = {}): string {
 	const message = translations[getQuickAddLanguage()][key] ?? en[key] ?? key;
 	return message.replace(/\{(\w+)\}/g, (match, name) => {
 		const value = values[name];
