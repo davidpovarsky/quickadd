@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { t } from "../../i18n";
     import type IChoice from "../../types/choices/IChoice";
     import type IMultiChoice from "../../types/choices/IMultiChoice";
     import ChoiceListItem from "./ChoiceListItem.svelte";
@@ -122,7 +123,11 @@
         // autoAriaDisabled silences the library's own move alerts, so announce the
         // keyboard reorder ourselves (cross-zone moves stay mouse-only).
         alertToScreenReader(
-            `Moved ${choice.name} to position ${target + 1} of ${list.length}`,
+            t("choices.movedToPosition", {
+                name: choice.name,
+                position: target + 1,
+                total: list.length,
+            }),
         );
     }
 </script>
@@ -134,7 +139,8 @@
         class="choiceList"
         class:qa-nested={nested}
         class:qa-folder-empty={isEmptyFolder}
-        class:qa-empty={choices.length === 0}>
+        class:qa-empty={choices.length === 0}
+        data-empty-folder-hint={t("choices.emptyFolderHint")}>
     {#each stripShadow(choices) as choice (choice.id)}
         <!-- Flip wrapper: the dndzone's direct child = the animated/draggable item.
              Must stay margin/padding/border-less (the 12px inter-row margin lives on
@@ -229,12 +235,12 @@
    (qa-empty = live `choices` empty), so it cleanly swaps out for the previewed row
    without changing the band's size. */
 .choiceList.qa-nested.qa-folder-empty.qa-empty::after {
-    content: "Empty — add a choice or drag one here.";
+    content: attr(data-empty-folder-hint);
     color: var(--text-muted);
     font-size: var(--font-ui-smaller, 12px);
     font-style: italic;
     line-height: 1.3;
-    padding-left: 2px;
+    padding-inline-start: 2px;
     pointer-events: none;
     user-select: none;
 }

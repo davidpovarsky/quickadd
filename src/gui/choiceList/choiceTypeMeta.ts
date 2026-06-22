@@ -1,3 +1,4 @@
+import { t } from "../../i18n";
 import type { ChoiceType } from "../../types/choices/choiceType";
 import type IChoice from "../../types/choices/IChoice";
 import { flattenChoices } from "../../utils/choiceUtils";
@@ -21,20 +22,20 @@ export interface ChoiceTypeMeta {
 export const DOER_CHOICE_TYPES: ChoiceTypeMeta[] = [
 	{
 		type: "Template",
-		label: "Template",
-		description: "Create a note from a template file.",
+		label: t("choiceTypes.template.label"),
+		description: t("choiceTypes.template.description"),
 		iconId: "file-text",
 	},
 	{
 		type: "Capture",
-		label: "Capture",
-		description: "Add text to a note — append, prepend, or insert.",
+		label: t("choiceTypes.capture.label"),
+		description: t("choiceTypes.capture.description"),
 		iconId: "pencil",
 	},
 	{
 		type: "Macro",
-		label: "Macro",
-		description: "Run a sequence of commands and scripts.",
+		label: t("choiceTypes.macro.label"),
+		description: t("choiceTypes.macro.description"),
 		iconId: "terminal",
 	},
 ];
@@ -47,13 +48,13 @@ export const DOER_CHOICE_TYPES: ChoiceTypeMeta[] = [
 export function defaultChoiceName(type: ChoiceType): string {
 	switch (type) {
 		case "Template":
-			return "New template";
+			return t("choiceTypes.default.template");
 		case "Capture":
-			return "New capture";
+			return t("choiceTypes.default.capture");
 		case "Macro":
-			return "New macro";
+			return t("choiceTypes.default.macro");
 		case "Multi":
-			return "New folder";
+			return t("choiceTypes.default.folder");
 	}
 }
 

@@ -5,6 +5,7 @@
 	import { log } from "src/logger/logManager";
 	import { tick, untrack } from "svelte";
 	import type QuickAdd from "../../main";
+	import { t, quickAddTextDirection } from "../../i18n";
 	import {
 		CommandRegistry,
 		configureChoice,
@@ -282,7 +283,7 @@
 			commandRegistry.enableCommand(newChoice);
 		}
 		save();
-		new Notice(`Duplicated "${sourceChoice.name}".`);
+		new Notice(t("choices.duplicated", { name: sourceChoice.name }));
 		await revealChoice(newChoice.id);
 	}
 
@@ -349,16 +350,15 @@
 </script>
 
 
-<div>
+<div dir={quickAddTextDirection()}>
 	{#if choices.length === 0 && filterQuery.trim().length === 0}
 		<!-- First-run / empty state: the hero is the single focal CTA (the top-bar
 		     add controls are not rendered here, so there's no duplicate). -->
 		<div class="choiceEmptyState">
 			<ObsidianIcon iconId="folder-plus" size={28} />
-			<div class="choiceEmptyTitle">No choices yet</div>
+			<div class="choiceEmptyTitle">{t("choices.noChoicesYet")}</div>
 			<p class="choiceEmptyBody">
-				A choice is an action QuickAdd can run — create a note, capture
-				text, or run a macro. Group them with folders.
+				{t("choices.emptyBody")}
 			</p>
 			<div class="choiceEmptyActions">
 				<AddChoiceControls onAddChoice={addChoiceToList} />
@@ -369,7 +369,7 @@
 			<div class="choiceFilterInputWrapper">
 				<input
 					type="text"
-					placeholder="Filter choices (fuzzy)"
+					placeholder={t("choices.filterPlaceholder")}
 					bind:value={filterQuery}
 					autocapitalize="off"
 					autocorrect="off"
@@ -382,7 +382,7 @@
 					}}
 				/>
 				{#if filterQuery}
-					<button class="choiceFilterClear" aria-label="Clear filter" title="Clear"
+					<button class="choiceFilterClear" aria-label={t("choices.clearFilter")} title={t("choices.clear")}
 						onclick={() => (filterQuery = "")}
 					>
 						<ObsidianIcon iconId="x" size={14} />
@@ -416,8 +416,8 @@
 				<button
 					type="button"
 					class="qaAIAssistantBtn clickable-icon"
-					aria-label="Configure AI Assistant"
-					title="Configure AI Assistant"
+					aria-label={t("choices.configureAI")}
+					title={t("choices.configureAI")}
 					onclick={openAISettings}
 				>
 					<ObsidianIcon iconId="sparkles" size={16} />
@@ -490,12 +490,12 @@
 
 	.choiceFilterInputWrapper input {
 		width: 100%;
-		padding-right: 1.6rem; /* space for clear button */
+		padding-inline-end: 1.6rem; /* space for clear button */
 	}
 
 	.choiceFilterClear {
 		position: absolute;
-		right: 4px;
+		inset-inline-end: 4px;
 		background: transparent;
 		border: none;
 		cursor: pointer;
