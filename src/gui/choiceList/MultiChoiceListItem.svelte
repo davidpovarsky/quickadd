@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { t } from "../../i18n";
     import ObsidianIcon from "../components/ObsidianIcon.svelte";
     import { stopDragInit } from "../shared/stopDragInit";
     import AddChoiceControls from "./AddChoiceControls.svelte";
@@ -117,7 +118,7 @@
             type="button"
             class="multiChoiceListItemName"
             aria-expanded={!choice.collapsed}
-            aria-label={`Toggle ${choice.name}`}
+            aria-label={t("choices.toggleNamed", { name: choice.name })}
             use:stopDragInit
             onclick={toggleCollapsed}
         >
@@ -211,7 +212,7 @@
            the attribute (verified in-app: width attr 16, computed 18, name flush).
            The lucide glyph also carries ~4.5px side-bearing, so a 2px flex gap
            yields a ~6px optical gap to the name — the prior 5px gap was ~9.5px. */
-        margin-left: -20px;
+        margin-inline-start: -20px;
         display: flex;
         align-items: center;
         gap: 2px;
@@ -221,7 +222,7 @@
         padding: 0;
         font: inherit;
         color: inherit;
-        text-align: left;
+        text-align: start;
         cursor: pointer;
         /* Suppress double-tap-zoom + its click delay on touch — proper touch hygiene
            for a tap target, and reduces the ghost-click the dedupe above also guards. */
@@ -239,7 +240,7 @@
        droppable area (WYSIWYG); it is NOT drawn on this wrapper, which extends past
        the zone to the add-row/hint. */
     .nestedChoiceList {
-        padding-left: 25px;
+        padding-inline-start: 25px;
     }
 
     /* The per-folder add-row is the folder's own affordance: one spacing step
