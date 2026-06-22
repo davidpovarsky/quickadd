@@ -1,0 +1,34 @@
+name: Build plugin from ref
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git branch, tag, or SHA to build
+        required: true
+        default: hebrew-localization
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.18.1
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+      - run: |
+          mkdir -p dist/quickadd
+          cp manifest.json main.js dist/quickadd/
+          if [ -f styles.css ]; then cp styles.css dist/quickadd/; fi
+          cd dist
+          zip -r quickadd-${{ inputs.ref }}.zip quickadd
+      - uses: actions/upload-artifact@v4
+        with:
+          name: quickadd-${{ inputs.ref }}
+          path: dist/quickadd-${{ inputs.ref }}.zip
