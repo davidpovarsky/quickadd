@@ -1,7 +1,7 @@
 /** biome-ignore-all assist/source/organizeImports: Import order is critical to prevent circular dependencies - ChoiceExecutor must load before dependent classes */
 import type { Debouncer } from "obsidian";
 import { Plugin, TFile, debounce } from "obsidian";
-import { QuickAddSettingsTab } from "./quickAddSettingsTab";
+import { QuickAddSettingsTab } from "./quickAddSettingsTabCompat";
 import { DEFAULT_SETTINGS } from "./settings";
 import type { QuickAddSettings } from "./settings";
 import { log } from "./logger/logManager";
