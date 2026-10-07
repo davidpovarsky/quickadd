@@ -8,6 +8,7 @@ on:
         types: [opened, edited, synchronize, reopened]
 
 permissions:
+  actions: read
     pull-requests: read
 
 concurrency:
@@ -19,10 +20,26 @@ jobs:
         name: Validate PR title
         runs-on: ubuntu-latest
         steps:
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Harden Runner
               uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
               with:
                   egress-policy: audit
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Lint PR title
               uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
               env:
