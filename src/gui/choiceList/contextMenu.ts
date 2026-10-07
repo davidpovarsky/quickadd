@@ -1,23 +1,13 @@
 import type { App } from "obsidian";
 import { Menu as ObsidianMenu } from "obsidian";
+import { t } from "../../i18n";
 import type IChoice from "src/types/choices/IChoice";
 import type IMultiChoice from "src/types/choices/IMultiChoice";
 
 export type MoveTarget = { id: string; path: string };
 
-/**
- * Sentinel target id for "Move to: (root)". Passed through the existing `onMove`
- * action (so no new wiring is needed in the row components); the ChoiceView handler
- * recognises it and re-appends the choice at the top level. The constant prefix
- * cannot collide with a real uuid-keyed choice.
- */
 export const MOVE_TO_ROOT_TARGET_ID = "quickadd:move-to-root";
 
-/**
- * True when `choice` lives inside a Multi (folder) rather than at the top level of
- * `roots`. Drives whether the "Move to: (root)" affordance is offered — there is
- * nowhere to move a choice that is already at root.
- */
 export function isChoiceNested(
   choice: IChoice,
   roots: IChoice[] | undefined,
@@ -39,10 +29,6 @@ export function isChoiceNested(
   return walk(source);
 }
 
-/**
- * Compute eligible Multi targets for moving `moving` into, excluding self and descendants.
- * Returns label paths as "Parent / Child".
- */
 export function computeEligibleMultiTargets(
   moving: IChoice,
   roots: IChoice[] | undefined,
@@ -91,10 +77,6 @@ type MenuActions = {
   onMove: (targetId: string) => void;
 };
 
-/**
- * Build the choice context menu (shared by the mouse and keyboard entry points).
- * "Move to" is rendered as a flattened list of targets for reliability.
- */
 function buildChoiceMenu(
   app: App,
   choice: IChoice,
@@ -106,24 +88,20 @@ function buildChoiceMenu(
   menu
     .addItem((item) =>
       item
-        .setTitle(
-          choice.command ? "Disable in Command Palette" : "Enable in Command Palette",
-        )
+        .setTitle(choice.command ? t("choices.disableCommandPalette") : t("choices.enableCommandPalette"))
         .setIcon("zap")
         .onClick(actions.onToggle),
     )
-    .addItem((item) => item.setTitle("Rename").setIcon("pencil").onClick(actions.onRename))
-    .addItem((item) => item.setTitle("Configure").setIcon("settings").onClick(actions.onConfigure))
-    .addItem((item) => item.setTitle("Duplicate").setIcon("copy").onClick(actions.onDuplicate))
-    .addItem((item) => item.setTitle("Delete").setIcon("trash-2").onClick(actions.onDelete))
+    .addItem((item) => item.setTitle(t("choices.rename")).setIcon("pencil").onClick(actions.onRename))
+    .addItem((item) => item.setTitle(t("choices.configure")).setIcon("settings").onClick(actions.onConfigure))
+    .addItem((item) => item.setTitle(t("choices.duplicate")).setIcon("copy").onClick(actions.onDuplicate))
+    .addItem((item) => item.setTitle(t("choices.delete")).setIcon("trash-2").onClick(actions.onDelete))
     .addSeparator();
 
-  // Offer a way back OUT of a folder for keyboard/menu users (cross-zone drag is
-  // pointer-only). Only meaningful when the choice is currently nested.
   if (isChoiceNested(choice, roots)) {
     menu.addItem((item) =>
       item
-        .setTitle("Move to: (root)")
+        .setTitle(t("choices.moveToRoot"))
         .setIcon("folder-up")
         .onClick(() => actions.onMove(MOVE_TO_ROOT_TARGET_ID)),
     );
@@ -132,15 +110,15 @@ function buildChoiceMenu(
   const targets = computeEligibleMultiTargets(choice, roots);
   if (targets.length === 0) {
     menu.addItem((item) =>
-      item.setTitle("Move to: (no folders)").setDisabled(true).setIcon("folder"),
+      item.setTitle(t("choices.moveToNoFolders")).setDisabled(true).setIcon("folder"),
     );
   } else {
-    targets.forEach((t) =>
+    targets.forEach((target) =>
       menu.addItem((item) =>
         item
-          .setTitle(`Move to: ${t.path}`)
+          .setTitle(t("choices.moveToPath", { path: target.path }))
           .setIcon("folder-open")
-          .onClick(() => actions.onMove(t.id)),
+          .onClick(() => actions.onMove(target.id)),
       ),
     );
   }
@@ -148,9 +126,6 @@ function buildChoiceMenu(
   return menu;
 }
 
-/**
- * Show the context menu for a choice at the mouse event (right-click on a row).
- */
 export function showChoiceContextMenu(
   app: App,
   evt: MouseEvent,
@@ -162,11 +137,6 @@ export function showChoiceContextMenu(
   buildChoiceMenu(app, choice, roots, actions).showAtMouseEvent(evt);
 }
 
-/**
- * Show the same menu anchored to an element (the keyboard-accessible "More options"
- * button), positioned at the element's bottom-left so it works without a mouse
- * pointer. WCAG 2.1.1 — the row's right-click menu is reachable from the keyboard.
- */
 export function showChoiceContextMenuAtElement(
   app: App,
   anchor: HTMLElement,

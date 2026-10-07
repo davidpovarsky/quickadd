@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Menu } from "obsidian";
+	import { t } from "../../i18n";
 	import type { ChoiceType } from "../../types/choices/choiceType";
 	import ObsidianIcon from "../components/ObsidianIcon.svelte";
 	import { DOER_CHOICE_TYPES, defaultChoiceName } from "./choiceTypeMeta";
@@ -80,17 +81,17 @@
 
 	// Per-folder (compact) controls read as "Add choice"/"Add folder" text links;
 	// the global controls read as "New choice"/"New folder" buttons.
-	const newChoiceText = $derived(compact ? "Add choice" : "New choice");
-	const newFolderText = $derived(compact ? "Add folder" : "New folder");
+	const newChoiceText = $derived(compact ? t("choices.addChoice") : t("choices.newChoice"));
+	const newFolderText = $derived(compact ? t("choices.addFolder") : t("choices.newFolder"));
 
 	// WCAG 2.5.3 (Label in Name): the accessible name must CONTAIN the visible
 	// text. Per folder we name the target ("Add choice to {folder}"), which keeps
 	// "Add choice" as a substring.
 	const newChoiceLabel = $derived(
-		targetFolderName ? `Add choice to ${targetFolderName}` : newChoiceText,
+		targetFolderName ? t("choices.addChoiceTo", { name: targetFolderName }) : newChoiceText,
 	);
 	const newFolderLabel = $derived(
-		targetFolderName ? `Add folder to ${targetFolderName}` : newFolderText,
+		targetFolderName ? t("choices.addFolderTo", { name: targetFolderName }) : newFolderText,
 	);
 </script>
 
@@ -141,7 +142,7 @@
 
 	/* The chevron sits tighter to the label than the leading plus. */
 	.qaNewChoiceBtn :global(svg:last-child) {
-		margin-left: -0.1em;
+		margin-inline-start: -0.1em;
 		opacity: 0.85;
 	}
 

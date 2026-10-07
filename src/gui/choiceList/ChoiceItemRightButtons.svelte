@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { t } from "../../i18n";
     import IconButton from "../components/IconButton.svelte";
     import DragHandle from "../components/DragHandle.svelte";
 
@@ -31,20 +32,39 @@
         onMoveDown?: () => void;
         onOpenMenu?: (anchor: HTMLElement) => void;
     } = $props();
+
+    const commandPaletteLabel = $derived(
+        choiceName ? `${t("choices.commandPalette")}: ${choiceName}` : t("choices.commandPalette"),
+    );
+    const configureLabel = $derived(
+        choiceName ? t("choices.configureNamed", { name: choiceName }) : t("choices.configure"),
+    );
+    const duplicateLabel = $derived(
+        choiceName ? t("choices.duplicateNamed", { name: choiceName }) : t("choices.duplicate"),
+    );
+    const deleteLabel = $derived(
+        choiceName ? t("choices.deleteNamed", { name: choiceName }) : t("choices.delete"),
+    );
+    const moreOptionsLabel = $derived(
+        choiceName ? t("choices.moreOptionsFor", { name: choiceName }) : t("choices.moreOptions"),
+    );
+    const reorderLabel = $derived(
+        choiceName ? t("choices.reorderNamed", { name: choiceName }) : t("choices.reorder"),
+    );
 </script>
 
 <div class="rightButtonsContainer">
     <IconButton
         iconId="zap"
         ariaPressed={commandEnabled}
-        label={`Command palette${choiceName ? ": " + choiceName : ""}`}
+        label={commandPaletteLabel}
         extraClass="qa-row-secondary-action"
         onclick={onToggleCommand}
     />
     {#if showConfigureButton}
         <IconButton
             iconId="settings"
-            label={`Configure${choiceName ? " " + choiceName : ""}`}
+            label={configureLabel}
             extraClass="qa-row-secondary-action"
             onclick={onConfigureChoice}
         />
@@ -53,7 +73,7 @@
     {#if showDuplicateButton}
         <IconButton
             iconId="copy"
-            label={`Duplicate${choiceName ? " " + choiceName : ""}`}
+            label={duplicateLabel}
             extraClass="qa-row-secondary-action"
             onclick={onDuplicateChoice}
         />
@@ -61,7 +81,7 @@
 
     <IconButton
         iconId="trash-2"
-        label={`Delete${choiceName ? " " + choiceName : ""}`}
+        label={deleteLabel}
         extraClass="qa-row-secondary-action"
         onclick={onDeleteChoice}
     />
@@ -70,13 +90,13 @@
         <IconButton
             iconId="more-vertical"
             ariaHasPopup="menu"
-            label={`More options${choiceName ? " for " + choiceName : ""}`}
+            label={moreOptionsLabel}
             onclick={(e) => onOpenMenu?.(e.currentTarget as HTMLElement)}
         />
     {/if}
 
     <DragHandle
-        label={`Reorder${choiceName ? " " + choiceName : ""}`}
+        label={reorderLabel}
         {dragDisabled}
         onDragStart={onDragHandleDown}
         {onMoveUp}
