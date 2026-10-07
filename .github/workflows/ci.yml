@@ -15,6 +15,7 @@ concurrency:
     cancel-in-progress: true
 
 permissions:
+  actions: read
     contents: read
 
 jobs:
@@ -22,24 +23,72 @@ jobs:
         name: Test
         runs-on: ubuntu-latest
         steps:
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Harden Runner
               uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
               with:
                   egress-policy: audit
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Checkout
               uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
               with:
                   persist-credentials: false
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Setup pnpm
               uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Use Node.js 24
               uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
               with:
                   node-version: 24
                   check-latest: true
                   cache: pnpm
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Run tests
               run: pnpm run test
 
@@ -47,25 +96,81 @@ jobs:
         name: Build + Lint
         runs-on: ubuntu-latest
         steps:
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Harden Runner
               uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
               with:
                   egress-policy: audit
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Checkout
               uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
               with:
                   persist-credentials: false
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Setup pnpm
               uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Use Node.js 24
               uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
               with:
                   node-version: 24
                   check-latest: true
                   cache: pnpm
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Run build with lint
               run: pnpm run build-with-lint
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Svelte check
               run: pnpm run check
