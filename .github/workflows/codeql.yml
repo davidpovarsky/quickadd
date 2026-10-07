@@ -13,6 +13,7 @@ concurrency:
     cancel-in-progress: true
 
 permissions:
+  actions: read
     contents: read
 
 jobs:
@@ -28,19 +29,51 @@ jobs:
             matrix:
                 language: [javascript-typescript, actions]
         steps:
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Harden Runner
               uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
               with:
                   egress-policy: audit
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Checkout
               uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
               with:
                   persist-credentials: false
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Initialize CodeQL
               uses: github/codeql-action/init@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4
               with:
                   languages: ${{ matrix.language }}
                   queries: security-extended
+            - name: Live Activity · refresh
+              uses: davidpovarsky/github-automation/live-refresh@main
+              continue-on-error: true
+              with:
+                event: refresh
+                device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+                token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+                github_token: ${{ github.token }}
             - name: Perform CodeQL Analysis
               uses: github/codeql-action/analyze@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4
               with:
